@@ -12,8 +12,8 @@ const searchImg = () => {
   getImg(keyword);
 };
 
-const renderImg = (imageUrl, photographer, photographerID) => {
-  const html = `
+const renderImg = (imageUrl, photographer, photographerID, photoAlt) => {
+  const html = `<h2>${photoAlt}</h2>
         <img src="${imageUrl}" alt="${keyword}" class="img-fluid object-fit-cover rounded mb-3" />
         <figcaption class="text-center">
           <a href="https://www.pexels.com">Photos provided by Pexels</a>
@@ -23,7 +23,7 @@ const renderImg = (imageUrl, photographer, photographerID) => {
              on Pexels.</p>
         </figcaption>`;
 
-  imgContainer.insertAdjacentHTML("beforeend", html);
+  imgContainer.insertAdjacentHTML("afterend", html);
 };
 
 const getImg = (keyword) => {
@@ -43,16 +43,17 @@ const getImg = (keyword) => {
       imageUrl = photos[randomIndex].src.medium;
       let photographer = photos[randomIndex].photographer;
       let photographerID = photos[randomIndex].photographer_id;
-      renderImg(imageUrl, photographer, photographerID);
-      console.log(data);
-
+      let photoAlt = photos[randomIndex].alt;
+      renderImg(imageUrl, photographer, photographerID, photoAlt);
     })
     .catch((error) => {
       console.error("Error fetching image:", error);
+      alert("Error fetching image");
     });
 };
 
 searchBtn.addEventListener("click", (e) => {
   e.preventDefault();
   searchImg();
+  searchInput.value = " ";
 });
