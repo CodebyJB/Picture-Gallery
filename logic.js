@@ -12,6 +12,10 @@ const searchImg = () => {
   getImg(keyword);
 };
 
+const renderError = function (msg) {
+  imgContainer.insertAdjacentText("afterend", msg);
+};
+
 const renderImg = (imageUrl, photographer, photographerID, photoAlt) => {
   const html = `<h2>${photoAlt}</h2>
         <img src="${imageUrl}" alt="${keyword}" class="img-fluid object-fit-cover rounded mb-3" />
@@ -35,7 +39,11 @@ const getImg = (keyword) => {
       Authorization: apiKey,
     },
   })
-    .then((response) => response.json())
+    .then((response) => {
+      if (!response.ok)
+        throw new Error(`Image not found. (${response.status})`);
+      return response.json();
+    })
     .then((data) => {
       // Extract the URL of a random image
       let photos = data.photos;
@@ -47,13 +55,12 @@ const getImg = (keyword) => {
       renderImg(imageUrl, photographer, photographerID, photoAlt);
     })
     .catch((error) => {
-      console.error("Error fetching image:", error);
-      alert("Error fetching image");
+      renderError(`Something went wrong! ${error}`);
     });
 };
 
 searchBtn.addEventListener("click", (e) => {
   e.preventDefault();
   searchImg();
-  searchInput.value = " ";
+  searchInput.value = "";
 });
